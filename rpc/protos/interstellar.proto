@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package interstellar;
+
+service InterstellarCommunication {
+  // Say hello and receive a hello back
+  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+  // Get a stream of words from Mars
+  rpc GetMessageFromMars(MessageRequest) returns (stream StreamMessageFromMars) {}
+  // Send a stream of words from earth and get a quick reply back from Mars
+  rpc SendMessageFromEarth(stream StreamMessageFromEarth) returns (ReplyFromMars) {}
+  // Send a stream of words from earth and get a stream of words back from Mars
+  rpc SendAndReceiveMessage(stream StreamMessageFromEarth) returns (stream StreamMessageFromMars) {}
+}
+
+message HelloRequest {
+  string hello_from_earth = 1;
+}
+
+message HelloResponse {
+  string hello_from_mars = 1;
+}
+
+message MessageRequest {
+  string request = 1;
+}
+
+message StreamMessageFromEarth {
+  string message = 1;
+}
+
+message ReplyFromMars {
+  string reply = 1;
+}
+
+message StreamMessageFromMars {
+  string message = 1;
+}

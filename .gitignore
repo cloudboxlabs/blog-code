@@ -1,0 +1,3 @@
+*.idea/*
+.mta_api_key
+*.pytest_cache/*
