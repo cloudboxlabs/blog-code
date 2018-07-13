@@ -1,8 +1,3 @@
-# -*- encoding: utf-8 -*-
-"""
-Python Aplication Template
-Licence: GPLv3
-"""
 import os
 
 from flask import render_template, request
@@ -32,10 +27,10 @@ def save():
     form = BlogPostForm()
     if form.validate_on_submit():
         if request.form['action'] == 'draft':
-            print 'Saving to redis'
+            print('Saving to redis')
             redis_client.set(form.title.data, form.body.data)
         else:
-            print 'Saving to postgres'
+            print('Saving to postgres')
             model = Post()
             model.title = form.title.data
             model.body = form.body.data
