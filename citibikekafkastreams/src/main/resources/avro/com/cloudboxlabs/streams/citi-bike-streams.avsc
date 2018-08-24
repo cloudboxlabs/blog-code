@@ -1,0 +1,31 @@
+[
+    {"namespace": "com.cloudboxlabs.streams.avro",
+     "type": "record",
+     "name": "StationInformation",
+     "fields": [
+         {"name": "station_id", "type": "string"},
+         {"name": "name", "type": "string"},
+         {"name": "latitude", "type": "float"},
+         {"name": "longitude", "type": "float"},
+         {"name": "capacity", "type": "int"}
+     ]
+    },
+
+    {"namespace": "com.cloudboxlabs.streams.avro",
+     "type": "record",
+     "name": "StationStatus",
+     "fields": [
+         {"name": "station_id", "type": "string"},
+         {"name": "num_bikes_available", "type": "int"},
+         {"name": "num_ebikes_available", "type": "int"},
+         {"name": "num_bikes_disabled", "type": "int"},
+         {"name": "num_docks_available", "type": "int"},
+         {"name": "num_docks_disabled", "type": "int"},
+         {"name": "is_installed", "type": "int"},
+         {"name": "is_renting", "type": "int"},
+         {"name": "is_returning", "type": "int"}
+     ]
+    }
+]
+
+
