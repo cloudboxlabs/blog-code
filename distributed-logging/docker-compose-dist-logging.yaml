@@ -1,0 +1,85 @@
+version: '2.1'
+services:
+    web:
+      image: httpd
+      ports:
+        - "8080:80"
+      links:
+        - fluentd
+      logging:
+        driver: "fluentd"
+        options:
+          fluentd-address: localhost:24224
+          tag: httpd.access
+    fluentd:
+      build:
+        context: ./
+        dockerfile: Dockerfile-fluentd
+      volumes:
+        - ./fluentd/conf:/fluentd/etc
+      depends_on:
+        - kafka
+      links:
+        - kafka
+      ports:
+        - "24224:24224"
+        - "24224:24224/udp"
+    zookeeper:
+      image: wurstmeister/zookeeper
+      ports:
+        - "2181:2181"
+    kafka:
+      image: wurstmeister/kafka
+      hostname: kafka
+      depends_on:
+        - zookeeper
+      ports:
+        - "9092:9092"
+      environment:
+        KAFKA_BROKER_ID: 1
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        KAFKA_CREATE_TOPICS: log-messages:1:1,connect-config:1:1:compact,connect-offset:1:1:compact,connect-status:1:1:compact
+        KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+    kafka_test:
+      build:
+        context: ./
+        dockerfile: Dockerfile-test
+      hostname: kafka_test
+      depends_on:
+        - kafka
+      links:
+        - kafka
+      command: ["sleep", "inf"] 
+    kafka_connect:
+      build:
+        context: ./
+        dockerfile: Dockerfile-kafka-connect
+      depends_on:
+        - kafka
+        - elasticsearch
+      links:
+        - kafka
+        - elasticsearch
+      environment:
+        CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+        CONNECT_GROUP_ID: 1
+        CONNECT_CONFIG_STORAGE_TOPIC: connect-config
+        CONNECT_OFFSET_STORAGE_TOPIC: connect-offset
+        CONNECT_STATUS_STORAGE_TOPIC: connect-status
+        CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+        CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+        CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+        CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+        CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+        CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+        CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+        CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+        CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+        CONNECT_REST_ADVERTISED_HOST_NAME: localhost
+        CONNECT_PLUGIN_PATH: /opt/connectors
+    elasticsearch:
+      image: elasticsearch
+      expose:
+        - 9200
+      ports:
+        - "9200:9200"
