@@ -1,5 +1,7 @@
 FROM confluentinc/cp-kafka-connect:4.0.0
 
+RUN apt-get update && apt-get install -y vim
+
 RUN mkdir -p /opt
 RUN mkdir -p /opt/connectors
 ADD connector_jars /opt/connectors/connector_jars

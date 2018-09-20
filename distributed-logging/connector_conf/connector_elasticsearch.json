@@ -5,7 +5,8 @@
       "tasks.max":"1",
       "topics":"log-messages",
       "key.ignore":"true",
-      "connection.url": "elasticsearch:9200",
+      "schema.ignore": "true",
+      "connection.url": "http://elasticsearch:9200",
       "type.name": "kafka-connect"
    }
 }

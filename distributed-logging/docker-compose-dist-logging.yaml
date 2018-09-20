@@ -76,10 +76,16 @@ services:
         CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
         CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
         CONNECT_REST_ADVERTISED_HOST_NAME: localhost
-        CONNECT_PLUGIN_PATH: /opt/connectors
+        CONNECT_PLUGIN_PATH: "/usr/share/java,/opt/connectors"
     elasticsearch:
       image: elasticsearch
       expose:
         - 9200
       ports:
         - "9200:9200"
+    kibana:
+      image: kibana
+      links:
+        - "elasticsearch"
+      ports:
+        - "5601:5601"
