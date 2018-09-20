@@ -40,16 +40,6 @@ services:
         KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
         KAFKA_CREATE_TOPICS: log-messages:1:1,connect-config:1:1:compact,connect-offset:1:1:compact,connect-status:1:1:compact
         KAFKA_LISTENERS: PLAINTEXT://kafka:9092
-    kafka_test:
-      build:
-        context: ./
-        dockerfile: Dockerfile-test
-      hostname: kafka_test
-      depends_on:
-        - kafka
-      links:
-        - kafka
-      command: ["sleep", "inf"] 
     kafka_connect:
       build:
         context: ./
